@@ -1,17 +1,30 @@
 import React, { Component } from 'react'
-import { Row, Col, List, Icon, Input, Form, Button } from 'antd'
+import { Row, Col, List, Icon, Input, Form, Button, Comment } from 'antd'
+import { connect } from 'react-redux'
+import { getRoomContent } from '../../../_actions/rooms_actions'
 import io from 'socket.io-client'
-
-const data = [
-  'Geddoku',
-  'Oleiniik',
-  'Fish'
-];
 
 class RoomPage extends Component {
     
     state = {
-        message: ""
+        message: "",
+        roomName: "",
+        subject: "",
+        users: undefined
+    }
+
+    componentDidMount() {
+        let length = window.location.pathname.length
+        let key = window.location.pathname.substring(6, length)
+
+        this.props.dispatch(getRoomContent(key))
+            .then((res) => {
+                this.setState({
+                    roomName: res.payload.name,
+                    users: res.payload.users,
+                    subject: res.payload.subject
+                })
+            })
     }
 
     onMessageChange = (e) => {
@@ -22,17 +35,17 @@ class RoomPage extends Component {
 
     render() {
         return (
-            <React.Fragment>
+            <div style={{marginTop: '2rem'}}>
                 <Row justify="center">
                     <Col xs={{ span: 5, offset: 1 }} lg={{ span: 6, offset: 2 }}>
                         <h3>Room Name:</h3>
-                        <h2>Math</h2>
+                        <h2>{this.state.roomName}</h2>
                         <h3>Users:</h3>
                             <List
-                                dataSource={data}
+                                dataSource={this.state.users}
                                 renderItem={item => (
                                     <List.Item>
-                                        {item}
+                                        {item.name}
                                     </List.Item>
                             )}
                         />
@@ -40,7 +53,12 @@ class RoomPage extends Component {
                     <Col xs={{ span: 11, offset: 1 }} lg={{ span: 6, offset: 2 }}>
                         <div style={{margin: '0 auto'}}>
                             <div className="infinite-container" style={{ height: '500px', overflowY: 'scroll' }}>
-                                <div>Message</div>
+                                <Comment 
+                                    author={<a>Geddoku</a>}
+                                    content={
+                                        <p>Hello ~~~</p>
+                                    }
+                                />
                             </div>
     
                             <Row>
@@ -67,12 +85,19 @@ class RoomPage extends Component {
                         </div>
                     </Col>
                     <Col xs={{ span: 5, offset: 1 }} lg={{ span: 6, offset: 2 }}>
-                        Ext. Info
+                        {this.state.subject}
                     </Col>
                 </Row>
-            </React.Fragment>
+            </div>
         )
     }
 }
 
-export default RoomPage
+const mapStateToProps = state => {
+    return {
+        user: state.user,
+        room: state.room
+    }
+}
+
+export default connect(mapStateToProps)(RoomPage)

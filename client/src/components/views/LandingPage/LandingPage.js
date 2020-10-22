@@ -5,10 +5,21 @@ import {
     Input, 
     Button, 
     Row, 
-    Col 
+    Col,
+    List,
+    Divider 
 } from 'antd'
 import { connect } from 'react-redux'
 import { createNewRoom, getUserRooms } from '../../../_actions/rooms_actions'
+import { NavLink } from 'react-router-dom'
+
+const RoomItem = props => {
+    return (
+        <List.Item>
+            <NavLink to={`/room/${props.item.roomKey}`} >{props.item.name}</NavLink>
+        </List.Item>
+    )
+}
 
 class LandingPage extends Component {
 
@@ -19,7 +30,8 @@ class LandingPage extends Component {
         username: "",
         subject: "",
         roomName: "",
-        roomKey: ""
+        roomKey: "",
+        rooms: undefined
     }
 
     componentDidMount() {
@@ -29,9 +41,12 @@ class LandingPage extends Component {
 
         setTimeout(() => {
             this.props.dispatch(getUserRooms(this.state.username)).then((res) => {
-                console.log(res)
+                console.log(res.payload)
+                this.setState({
+                    rooms: res.payload
+                })
             })
-        }, 100)
+        }, 50)
     }
 
     onRoomChange = (e) => {
@@ -125,7 +140,7 @@ class LandingPage extends Component {
 
         this.props.dispatch(createNewRoom(room)).then((res) => {
             console.log(res);
-            window.location = `/chat/${room.roomKey}`
+            window.location = `/room/${room.roomKey}`
         })
     }
 
@@ -133,10 +148,15 @@ class LandingPage extends Component {
         return (
             <div style={{ marginTop: '2rem'}}>
                 <Row style={{textAlign: 'center'}}>
-                    <Col style={{backgroundColor: '#f55'}} xs={{ span: 8}} lg={{ span: 8 }}>
-                        Joined Rooms/Courses
+                    <Col xs={{ span: 8}} lg={{ span: 8 }}>
+                        <Divider orientation="left">Joined Rooms/Courses</Divider>
+                        <List
+                            bordered
+                            dataSource={this.state.rooms}
+                            renderItem={item => (<RoomItem item={item} />)}
+                        />
                     </Col>
-                    <Col style={{backgroundColor: '#445'}} xs={{ span: 8}} lg={{ span: 8 }}>
+                    <Col xs={{ span: 8}} lg={{ span: 8 }}>
                         <Button type="default" onClick={this.showJoin}>
                             Join Room
                         </Button>
@@ -179,7 +199,7 @@ class LandingPage extends Component {
                             </Form>
                         </Modal>
                     </Col>
-                    <Col style={{backgroundColor: '#555'}} xs={{ span: 8}} lg={{ span: 8 }}>
+                    <Col xs={{ span: 8}} lg={{ span: 8 }}>
                         <Button type="primary" onClick={this.showCreate}>
                             Create Room
                         </Button>
@@ -234,6 +254,7 @@ class LandingPage extends Component {
         )
     }
 }
+
 const mapStateToProps = state => {
     return {
         user: state.user,

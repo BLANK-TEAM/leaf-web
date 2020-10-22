@@ -22,7 +22,7 @@ function App() {
           <Route exact path="/" component={Auth(LandingPage, null)} />
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
-          <Route path="/chat" component={Auth(RoomPage, null)} />
+          <Route path="/room" component={Auth(RoomPage, null)} />
         </Switch>
       </div>
     </Suspense>

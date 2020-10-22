@@ -28,4 +28,13 @@ router.get('/:id', (req, res) => {
     })
 })
 
+router.get('/room/:id', (req, res) => {
+    Room.find({ roomKey: req.params.id })
+        .populate('users')
+        .exec((err, room) => {
+            if (err) return res.status(400).send({ error: err })
+            res.status(200).send(room[0])
+        })
+})
+
 module.exports = router
