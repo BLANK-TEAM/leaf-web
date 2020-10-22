@@ -8,7 +8,7 @@ import {
     Col 
 } from 'antd'
 import { connect } from 'react-redux'
-import { createNewRoom} from '../../../_actions/rooms_actions'
+import { createNewRoom, getUserRooms } from '../../../_actions/rooms_actions'
 
 class LandingPage extends Component {
 
@@ -18,13 +18,20 @@ class LandingPage extends Component {
         roomId: "",
         username: "",
         subject: "",
-        roomName: ""
+        roomName: "",
+        roomKey: ""
     }
 
     componentDidMount() {
         this.setState({
             username: localStorage.getItem('userId')
         });
+
+        setTimeout(() => {
+            this.props.dispatch(getUserRooms(this.state.username)).then((res) => {
+                console.log(res)
+            })
+        }, 100)
     }
 
     onRoomChange = (e) => {
@@ -42,6 +49,12 @@ class LandingPage extends Component {
     onRoomNameChange = (e) => {
         this.setState({
             roomName: e.target.value
+        })
+    }
+
+    onRoomKeyChange = (e) => {
+        this.setState({
+            roomKey: e.target.value
         })
     }
 
@@ -106,10 +119,14 @@ class LandingPage extends Component {
             subject: this.state.subject,
             users: [this.state.username],
             messages: [],
-            courses: []
+            courses: [],
+            roomKey: this.state.roomKey
         }
 
-        this.props.dispatch(createNewRoom(room)).then((res) => console.log(res))
+        this.props.dispatch(createNewRoom(room)).then((res) => {
+            console.log(res);
+            window.location = `/chat/${room.roomKey}`
+        })
     }
 
     render() {
@@ -194,6 +211,13 @@ class LandingPage extends Component {
                                     name="subject"
                                 >
                                     <Input onChange={this.onSubjectChange} />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label="Room Key"
+                                    name="key"
+                                >
+                                    <Input onChange={this.onRoomKeyChange} />
                                 </Form.Item>
 
 

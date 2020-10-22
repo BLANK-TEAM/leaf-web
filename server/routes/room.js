@@ -10,12 +10,22 @@ router.post('/', (req, res) => {
         subject: req.body.subject,
         users: req.body.users,
         messages: req.body.messages,
-        courses: req.body.courses
+        courses: req.body.courses,
+        roomKey: req.body.roomKey
     })
 
     room.save()
         .then(() => res.send('Room created!'))
         .catch(err => res.status(400).send({ error: err }))
+})
+
+router.get('/:id', (req, res) => {
+    Room.find({ users: req.params.id })
+    .populate('users')
+    .exec((err, rooms) => {
+        if (err) return res.status(400).send({ error: err })
+        res.status(200).send(rooms)
+    })
 })
 
 module.exports = router

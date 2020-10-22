@@ -8,7 +8,7 @@ const data = [
   'Fish'
 ];
 
-class ChatPage extends Component {
+class RoomPage extends Component {
     
     state = {
         message: ""
@@ -75,4 +75,4 @@ class ChatPage extends Component {
     }
 }
 
-export default ChatPage
+export default RoomPage

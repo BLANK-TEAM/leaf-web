@@ -18,7 +18,10 @@ const roomSchema = mongoose.Schema({
     courses: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course'
-    }]
+    }],
+    roomKey: {
+        type: String
+    }
 }, { timestamps: true })
 
 const Room = mongoose.model('Room', roomSchema);
