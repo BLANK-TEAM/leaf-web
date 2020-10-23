@@ -1,8 +1,28 @@
-import React, { Component } from 'react'
-import { Row, Col, List, Icon, Input, Form, Button, Comment } from 'antd'
+import React, { Component, useEffect } from 'react'
+import { Row, Col, List, Icon, Input, Form, Button, Comment, Menu  } from 'antd'
 import { connect } from 'react-redux'
 import { getRoomContent } from '../../../_actions/rooms_actions'
 import io from 'socket.io-client'
+import {
+    BrowserRouter as
+    Link
+} from "react-router-dom";
+
+function Section({ name }) {
+
+    return (
+      <div>
+        {name ? (
+          <h3>
+            The <code>name</code> in the query string is &quot;{name}
+            &quot;
+          </h3>
+        ) : (
+          <h3>There is no name in the query string</h3>
+        )}
+      </div>
+    );
+}
 
 class RoomPage extends Component {
     
@@ -10,12 +30,15 @@ class RoomPage extends Component {
         message: "",
         roomName: "",
         subject: "",
-        users: undefined
+        users: undefined,
+        current: 'main',
     }
 
     componentDidMount() {
         let length = window.location.pathname.length
         let key = window.location.pathname.substring(6, length)
+
+        console.log(window.location.search)
 
         this.props.dispatch(getRoomContent(key))
             .then((res) => {
@@ -25,6 +48,12 @@ class RoomPage extends Component {
                     subject: res.payload.subject
                 })
             })
+            .then(() => {
+                var qsParams = `?name=${this.state.current}`;
+                var data = `{ name: ${this.state.current} }`;
+                var title = `${this.state.current}`;
+                window.history.pushState(data, title, qsParams);
+            })
     }
 
     onMessageChange = (e) => {
@@ -33,62 +62,53 @@ class RoomPage extends Component {
         })
     }
 
+    handleClick = e => {
+        this.setState({ current: e.key })
+        setTimeout(() => {
+            var qsParams = `?name=${this.state.current}`;
+            var data = `{ name: ${this.state.current} }`;
+            var title = `${this.state.current}`;
+            window.history.pushState(data, title, qsParams);
+        }, 500)
+    };
+
+    toggleCollapsed = () => {
+        this.setState({
+          collapsed: !this.state.collapsed,
+        });
+    };
+
     render() {
         return (
-            <div style={{marginTop: '2rem'}}>
-                <Row justify="center">
-                    <Col xs={{ span: 5, offset: 1 }} lg={{ span: 6, offset: 2 }}>
-                        <h3>Room Name:</h3>
-                        <h2>{this.state.roomName}</h2>
-                        <h3>Users:</h3>
-                            <List
-                                dataSource={this.state.users}
-                                renderItem={item => (
-                                    <List.Item>
-                                        {item.name}
-                                    </List.Item>
-                            )}
-                        />
-                    </Col>
-                    <Col xs={{ span: 11, offset: 1 }} lg={{ span: 6, offset: 2 }}>
-                        <div style={{margin: '0 auto'}}>
-                            <div className="infinite-container" style={{ height: '500px', overflowY: 'scroll' }}>
-                                <Comment 
-                                    author={<a>Geddoku</a>}
-                                    content={
-                                        <p>Hello ~~~</p>
-                                    }
-                                />
-                            </div>
-    
-                            <Row>
-                                <Form layout="inline">
-                                    <Col span={18}>
-                                        <Input 
-                                            id="message"
-                                            prefix={<Icon type="message" style={{ color: 'rgba(0, 0, 0, ..25'}} />}
-                                            type="text"
-                                            value={this.message}
-                                            onChange={this.onMessageChange}
-                                        />
-                                    </Col>
-                                    <Col span={2}>
-    
-                                    </Col>
-                                    <Col span={4}>
-                                        <Button type="primary" style={{width: '100%'}} htmlType="submit">
-                                            <Icon type="enter" />
-                                        </Button>
-                                    </Col>
-                                </Form>
-                            </Row>
-                        </div>
-                    </Col>
-                    <Col xs={{ span: 5, offset: 1 }} lg={{ span: 6, offset: 2 }}>
-                        {this.state.subject}
-                    </Col>
-                </Row>
-            </div>
+            <>
+            <h4 style={{padding: '1rem'}}>{this.state.roomName}</h4>
+            <Row>
+                <Col span={20} push={4}>
+                    <Section name={this.state.current} />
+                </Col>
+                <Col span={4} pull={20}>
+                <Menu
+                    defaultSelectedKeys={['1']}
+                    defaultOpenKeys={['sub1']}
+                    onClick={this.handleClick}
+                    selectedKeys={[this.state.current]}
+                >
+                    <Menu.Item key="main">
+                        <Link to="?name=main">Main</Link>
+                    </Menu.Item>
+                    <Menu.Item key="courses">
+                        <Link to="?name=courses">Courses</Link>
+                    </Menu.Item>
+                    <Menu.Item key="streams">
+                        <Link to="?name=streams">Streams</Link>
+                    </Menu.Item>
+                    <Menu.Item key="extensions">
+                        <Link to="?name=extensions">Extensions</Link>
+                    </Menu.Item>
+                </Menu>
+            </Col>
+        </Row>
+        </>
         )
     }
 }
