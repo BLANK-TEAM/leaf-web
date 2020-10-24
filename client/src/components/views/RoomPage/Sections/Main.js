@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { UploadOutlined, SendOutlined } from '@ant-design/icons'
 import { 
+    Row,
+    Col,
     Collapse, 
     Button, 
     Form, 
@@ -8,11 +10,13 @@ import {
     Comment, 
     Tooltip, 
     Avatar,
-    Divider 
+    Divider,
+    Alert 
 } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import { getRoomComments } from '../../../../_actions/comments_actions'
+import { getRoomComments, afterPostPost } from '../../../../_actions/comments_actions'
 import { getRoomContent } from '../../../../_actions/rooms_actions'
 import io from 'socket.io-client'
 
@@ -30,25 +34,39 @@ const Post = props => {
                 }}
             >
                 <div style={{padding: '1rem'}}>
-                    <Comment 
-                        author={<a>{props.post.author.name}</a>}
-                        content={
-                            <p>
-                                {props.post.content}
-                            </p>
-                        }
-                        avatar={
-                            <Avatar 
-                                src="https://i.pinimg.com/280x280_RS/29/6a/29/296a29f0a31ddc96ea4995be70ef3f05.jpg"
-                            />
-                        }
-                        datetime={
-                            <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-                                <span>{moment().fromNow()}</span>
-                            </Tooltip>
-                        }
-                    />
+                        <Comment 
+                            author={<a>{props.post.author.name}</a>}
+                            content={
+                                <p>
+                                    {props.post.content}
+                                </p>
+                            }
+                            avatar={
+                                <Avatar 
+                                    src="https://i.pinimg.com/280x280_RS/29/6a/29/296a29f0a31ddc96ea4995be70ef3f05.jpg"
+                                />
+                            }
+                            datetime={
+                                <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
+                                    <span>{moment().fromNow()}</span>
+                                </Tooltip>
+                            }
+                        />
                     <Divider />
+                    
+                    <div 
+                        style={{
+                            display: 'flex', 
+                            justifyContent: 'flex-end'
+                        }}
+                    >
+                        <Button style={{marginRight: '0.5rem'}}>
+                            <DeleteOutlined />
+                        </Button>
+                        <Button>
+                            <EditOutlined />
+                        </Button>
+                    </div>
     
                     {/* <Form style={{padding: '1rem'}}>
                         <Form.Item
@@ -73,7 +91,8 @@ export class Main extends Component {
     state = {
         roomId: "",
         content: "",
-        posts: []
+        posts: [],
+        status: false
     }
 
     onContentChange = (e) => {
@@ -97,12 +116,17 @@ export class Main extends Component {
             .then(() => {
                 this.props.dispatch(getRoomComments(this.state.roomId)).then((posts) => {
                     this.setState({
-                        posts: posts.payload
+                        posts: posts.payload.reverse()
                     })
                 })
             })
 
         this.socket = io(server)
+
+        this.socket.on('Output Post', post => {
+            this.props.dispatch(afterPostPost(post))
+            console.log(post)
+        })
     }
 
     submit = (e) => {
@@ -118,7 +142,10 @@ export class Main extends Component {
             room
         })
 
-        this.setState({ content: "" })
+        this.setState({ content: "", status: true })
+        setTimeout(() => {
+            window.location.reload();
+        }, 500)
     }
 
     renderComments = () => {
@@ -149,9 +176,19 @@ export class Main extends Component {
                 }}
             >
                 <Panel header="Share something...">
+                    {this.state.status 
+                    ? <Alert 
+                        message="Successfully added..." 
+                        type="success" 
+                        style={{marginBottom: '0.5rem'}}
+                    />
+                    : null}
                     <Form onSubmit={this.submit}>
                         <Form.Item>
-                            <Input.TextArea onChange={this.onContentChange} />
+                            <Input.TextArea 
+                                onChange={this.onContentChange} 
+                                value={this.state.content}
+                            />
                         </Form.Item>
                         <Form.Item>
                             <Button>
@@ -161,6 +198,7 @@ export class Main extends Component {
                                 style={{float: 'right'}} 
                                 type="primary" 
                                 htmlType="submit"
+                                onClick={this.submit}
                             >
                                 POST
                             </Button>

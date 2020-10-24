@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
-    GET_ROOM_COMMENTS
+    GET_ROOM_COMMENTS,
+    AFTER_POST_POST
 } from './types';
 import { COMMENT_SERVER } from '../components/Config.js';
 
@@ -11,5 +12,12 @@ export function getRoomComments(roomId) {
     return {
         type: GET_ROOM_COMMENTS,
         payload: request
+    }
+}
+
+export function afterPostPost(post) {
+    return {
+        type: AFTER_POST_POST,
+        payload: post
     }
 }

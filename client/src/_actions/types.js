@@ -6,3 +6,4 @@ export const CREATE_ROOM = 'create_room';
 export const GET_USER_ROOMS = 'get_user_rooms';
 export const GET_ROOM_CONTENT = 'get_room_content';
 export const GET_ROOM_COMMENTS = 'get_room_comments';
+export const AFTER_POST_POST = 'after_post_post';

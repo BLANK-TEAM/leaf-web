@@ -48,6 +48,13 @@ io.on('connection', socket => {
         
         comment.save((err, doc) => {
           if (err) return res.json({ success: false, err })
+
+          Comment.find({ "_id": doc._id })
+          .populate('author')
+          .populate('room')
+          .exec((err, doc) => {
+            return io.emit("Output Post", doc)
+          })
         })
       } catch (error) {
         
