@@ -2,24 +2,33 @@ import React, { Component, useEffect } from 'react'
 import { Row, Col, List, Icon, Input, Form, Button, Comment, Menu  } from 'antd'
 import { connect } from 'react-redux'
 import { getRoomContent } from '../../../_actions/rooms_actions'
-import io from 'socket.io-client'
 import {
     BrowserRouter as
     Link
 } from "react-router-dom";
 
-function Section({ name }) {
+import Main from './Sections/Main'
+
+function Section(props) {
 
     return (
       <div>
-        {name ? (
-          <h3>
-            The <code>name</code> in the query string is &quot;{name}
-            &quot;
-          </h3>
-        ) : (
-          <h3>There is no name in the query string</h3>
-        )}
+        {props.name === 'main'
+            ? (<Main state={props.state} />)
+            : null
+        }
+        {props.name === 'courses'
+            ? <div>Courses Section</div>
+            : null
+        }
+        {props.name === 'streams'
+            ? <div>Streams Section</div>
+            : null
+        }
+        {props.name === 'extensions'
+            ? <div>Extensions Section</div>
+            : null
+        }
       </div>
     );
 }
@@ -27,7 +36,6 @@ function Section({ name }) {
 class RoomPage extends Component {
     
     state = {
-        message: "",
         roomName: "",
         subject: "",
         users: undefined,
@@ -69,7 +77,7 @@ class RoomPage extends Component {
             var data = `{ name: ${this.state.current} }`;
             var title = `${this.state.current}`;
             window.history.pushState(data, title, qsParams);
-        }, 500)
+        }, 100)
     };
 
     toggleCollapsed = () => {
@@ -80,11 +88,12 @@ class RoomPage extends Component {
 
     render() {
         return (
-            <>
-            <h4 style={{padding: '1rem'}}>{this.state.roomName}</h4>
             <Row>
                 <Col span={20} push={4}>
-                    <Section name={this.state.current} />
+                    <Section 
+                        name={this.state.current} 
+                        state={this.state} 
+                    />
                 </Col>
                 <Col span={4} pull={20}>
                 <Menu
@@ -108,7 +117,6 @@ class RoomPage extends Component {
                 </Menu>
             </Col>
         </Row>
-        </>
         )
     }
 }
