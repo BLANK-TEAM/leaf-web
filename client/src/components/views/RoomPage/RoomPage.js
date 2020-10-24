@@ -6,6 +6,7 @@ import {
     BrowserRouter as
     Link
 } from "react-router-dom";
+import io from 'socket.io-client'
 
 import Main from './Sections/Main'
 
@@ -36,21 +37,22 @@ function Section(props) {
 class RoomPage extends Component {
     
     state = {
+        roomId: "",
         roomName: "",
         subject: "",
         users: undefined,
-        current: 'main',
+        current: 'main'
     }
 
     componentDidMount() {
+
         let length = window.location.pathname.length
         let key = window.location.pathname.substring(6, length)
-
-        console.log(window.location.search)
 
         this.props.dispatch(getRoomContent(key))
             .then((res) => {
                 this.setState({
+                    roomId: res.payload._id,
                     roomName: res.payload.name,
                     users: res.payload.users,
                     subject: res.payload.subject

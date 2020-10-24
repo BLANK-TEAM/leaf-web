@@ -30,11 +30,30 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+const { Comment } = require('./models/Comment');
+
 app.use('/api/users', require('./routes/users'));
 app.use('/api/rooms', require('./routes/room'));
+app.use('/api/comments', require('./routes/comments'));
 
 io.on('connection', socket => {
-  
+  socket.on('Create Comment', data => {
+    connect.then(db => {
+      try {
+        let comment = new Comment({ 
+          author: data.author, 
+          content: data.content, 
+          room: data.room 
+        })
+        
+        comment.save((err, doc) => {
+          if (err) return res.json({ success: false, err })
+        })
+      } catch (error) {
+        
+      }
+    })
+  })
 })
 
 //use this to show the image you have in node js server to client (react js)
@@ -56,6 +75,6 @@ if (process.env.NODE_ENV === "production") {
 
 const port = process.env.PORT || 5000
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server Listening on ${port}`)
 });

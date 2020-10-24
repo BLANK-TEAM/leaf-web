@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
 import user from './user_reducer';
 import room from './room_reducer';
+import comment from './comment_reducer'
 
 const rootReducer = combineReducers({
     user,
-    room
+    room,
+    comment
 });
 
 export default rootReducer;
