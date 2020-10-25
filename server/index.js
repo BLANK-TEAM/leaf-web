@@ -61,6 +61,25 @@ io.on('connection', socket => {
       }
     })
   })
+  socket.on('Delete Post', post => {
+    connect.then(db => {
+      try {
+        Comment.findByIdAndDelete(post.roomId)
+          .then(() => {
+            let message = {
+              msg: `Post - ${post.roomId} deleted...`,
+              id: post.roomId
+            }
+            return io.emit('Output Delete Post', message)
+          })
+          .catch((err) => {
+            return io.emit('Output Delete Post', err) 
+          })
+      } catch (error) {
+
+      }
+    })
+  })
 })
 
 //use this to show the image you have in node js server to client (react js)

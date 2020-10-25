@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import { UploadOutlined, SendOutlined } from '@ant-design/icons'
 import { 
     Row,
@@ -15,16 +15,42 @@ import {
 } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import moment from 'moment'
-import { connect } from 'react-redux'
-import { getRoomComments, afterPostPost } from '../../../../_actions/comments_actions'
+import { connect, useDispatch } from 'react-redux'
+import { getRoomComments, afterPostPost, deletePost } from '../../../../_actions/comments_actions'
 import { getRoomContent } from '../../../../_actions/rooms_actions'
 import io from 'socket.io-client'
 
 const { Panel } = Collapse;
 
+let socket;
+let server = 'http://localhost:5000'
+
 const Post = props => {
-    return (
-            <div
+    const [message, setMessage] = useState("")
+    const [id, setId] = useState("")
+
+    const dispatch = useDispatch()
+
+    socket = io(server)
+
+    useEffect(() => {
+        socket.on('Output Delete Post', msg => {
+            setMessage(msg.msg)
+            setId(msg.id)
+            setTimeout(() => {
+                window.location.reload()
+            }, 500)
+        })
+    }, [message])
+
+    const submitDeletePost = () => {
+        socket.emit('Delete Post', {
+            roomId: props.post._id
+        })
+        dispatch(deletePost(props.post))
+    }
+
+    return (<div
                 style={{
                     width: '90%',
                     margin: '0 auto',
@@ -33,6 +59,13 @@ const Post = props => {
                     borderRadius: '0.5rem'
                 }}
             >
+                {id === props.post._id 
+                    ? <Alert 
+                        message="Successfully deleted..." 
+                        type="success" 
+                        style={{padding: '1rem'}}
+                    />
+                    : null}
                 <div style={{padding: '1rem'}}>
                         <Comment 
                             author={<a>{props.post.author.name}</a>}
@@ -48,7 +81,7 @@ const Post = props => {
                             }
                             datetime={
                                 <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-                                    <span>{moment().fromNow()}</span>
+                                    <span>{moment(props.post.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
                                 </Tooltip>
                             }
                         />
@@ -60,7 +93,7 @@ const Post = props => {
                             justifyContent: 'flex-end'
                         }}
                     >
-                        <Button style={{marginRight: '0.5rem'}}>
+                        <Button onClick={submitDeletePost} style={{marginRight: '0.5rem'}}>
                             <DeleteOutlined />
                         </Button>
                         <Button>

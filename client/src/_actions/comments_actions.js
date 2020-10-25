@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {
     GET_ROOM_COMMENTS,
-    AFTER_POST_POST
+    AFTER_POST_POST,
+    DELETE_POST
 } from './types';
 import { COMMENT_SERVER } from '../components/Config.js';
 
@@ -18,6 +19,13 @@ export function getRoomComments(roomId) {
 export function afterPostPost(post) {
     return {
         type: AFTER_POST_POST,
+        payload: post
+    }
+}
+
+export function deletePost(post) {
+    return {
+        type: DELETE_POST,
         payload: post
     }
 }

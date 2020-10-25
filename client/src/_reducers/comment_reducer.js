@@ -1,6 +1,7 @@
 import {
     AFTER_POST_POST,
-    GET_ROOM_COMMENTS
+    GET_ROOM_COMMENTS,
+    DELETE_POST
 } from '../_actions/types';
 
 export default function(state={}, action) {
@@ -9,6 +10,8 @@ export default function(state={}, action) {
             return { ...state, comments: action.payload }
         case AFTER_POST_POST:
             return { ...state, comments: state.comments.concat(action.payload)}
+        case DELETE_POST:
+            return { ...state, comments: state.comments.filter(item => item !== action.payload) }
         default:
             return state
     }
