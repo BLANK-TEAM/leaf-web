@@ -16,108 +16,13 @@ import {
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import { connect, useDispatch } from 'react-redux'
-import { getRoomComments, afterPostPost, deletePost } from '../../../../_actions/comments_actions'
-import { getRoomContent } from '../../../../_actions/rooms_actions'
+import { getRoomComments, afterPostPost, deletePost } from '../../../../../_actions/comments_actions'
+import { getRoomContent } from '../../../../../_actions/rooms_actions'
 import io from 'socket.io-client'
 
+import PostItem from './PostItem'
+
 const { Panel } = Collapse;
-
-let socket;
-let server = 'http://localhost:5000'
-
-const Post = props => {
-    const [message, setMessage] = useState("")
-    const [id, setId] = useState("")
-
-    const dispatch = useDispatch()
-
-    socket = io(server)
-
-    useEffect(() => {
-        socket.on('Output Delete Post', msg => {
-            setMessage(msg.msg)
-            setId(msg.id)
-            setTimeout(() => {
-                window.location.reload()
-            }, 500)
-        })
-    }, [message])
-
-    const submitDeletePost = () => {
-        socket.emit('Delete Post', {
-            roomId: props.post._id
-        })
-        dispatch(deletePost(props.post))
-    }
-
-    return (<div
-                style={{
-                    width: '90%',
-                    margin: '0 auto',
-                    marginTop: '1rem',
-                    border: 'solid #f5f5f5',
-                    borderRadius: '0.5rem'
-                }}
-            >
-                {id === props.post._id 
-                    ? <Alert 
-                        message="Successfully deleted..." 
-                        type="success" 
-                        style={{padding: '1rem'}}
-                    />
-                    : null}
-                <div style={{padding: '1rem'}}>
-                        <Comment 
-                            author={<a>{props.post.author.name}</a>}
-                            content={
-                                <p>
-                                    {props.post.content}
-                                </p>
-                            }
-                            avatar={
-                                <Avatar 
-                                    src="https://i.pinimg.com/280x280_RS/29/6a/29/296a29f0a31ddc96ea4995be70ef3f05.jpg"
-                                />
-                            }
-                            datetime={
-                                <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-                                    <span>{moment(props.post.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
-                                </Tooltip>
-                            }
-                        />
-                    <Divider />
-                    
-                    <div 
-                        style={{
-                            display: 'flex', 
-                            justifyContent: 'flex-end'
-                        }}
-                    >
-                        <Button onClick={submitDeletePost} style={{marginRight: '0.5rem'}}>
-                            <DeleteOutlined />
-                        </Button>
-                        <Button>
-                            <EditOutlined />
-                        </Button>
-                    </div>
-    
-                    {/* <Form style={{padding: '1rem'}}>
-                        <Form.Item
-                            name="comment"
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item>
-                            <Button htmlType="submit">
-                                <SendOutlined />
-                            </Button>
-                        </Form.Item>
-                    </Form> */}
-    
-                </div>
-            </div>
-    )
-}
 
 export class Main extends Component {
 
@@ -183,7 +88,7 @@ export class Main extends Component {
 
     renderComments = () => {
         return this.state.posts.map((post) => (
-            <Post key={post._id} post={post} />
+            <PostItem key={post._id} post={post} />
         ))
     }
 

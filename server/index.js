@@ -64,16 +64,30 @@ io.on('connection', socket => {
   socket.on('Delete Post', post => {
     connect.then(db => {
       try {
-        Comment.findByIdAndDelete(post.roomId)
+        Comment.findByIdAndDelete(post.postId)
           .then(() => {
             let message = {
-              msg: `Post - ${post.roomId} deleted...`,
-              id: post.roomId
+              msg: `Post - ${post.postId} deleted...`,
+              id: post.postId
             }
             return io.emit('Output Delete Post', message)
           })
           .catch((err) => {
             return io.emit('Output Delete Post', err) 
+          })
+      } catch (error) {
+
+      }
+    })
+  })
+  socket.on('Update Post', data => {
+    connect.then(db => {
+      try {
+        Comment.findByIdAndUpdate(data.id)
+          .then(post => {
+            post.content = data.content
+
+            post.save()
           })
       } catch (error) {
 

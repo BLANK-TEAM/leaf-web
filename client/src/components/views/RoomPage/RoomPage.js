@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import io from 'socket.io-client'
 
-import Main from './Sections/Main'
+import Main from './Sections/Main/Main'
 
 function Section(props) {
 
