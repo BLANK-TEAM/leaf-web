@@ -6,13 +6,16 @@ import {
     Form,
     Input,
     Button,
-    Tooltip
+    Tooltip,
+    Collapse
 } from 'antd';
 import moment from 'moment'
-import { SendOutlined } from '@ant-design/icons'
+import { SendOutlined, CaretRightOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 import { afterPostComment, getComments } from '../../../../../_actions/post_comments_action'
   
+const { Panel } = Collapse
+
 const Editor = ({ onChange, onSubmit, submitting, value }) => (
     <div style={{display: 'flex', flexWrap: 'nowrap'}}>
       <Form.Item style={{width: '90%'}}>
@@ -35,12 +38,8 @@ class AppComment extends React.Component {
     componentDidMount() {
         this.props.dispatch(getComments(this.props.post._id))
         this.props.socket.on('Output Post Comment', data => {
-            console.log(data)
+            this.props.dispatch(afterPostComment(data))
         })
-
-        setTimeout(() => {
-            console.log(this.props.postComment)
-        }, 1000)
     }
   
     handleSubmit = () => {
@@ -75,16 +74,16 @@ class AppComment extends React.Component {
     renderComments = () => 
         this.props.postComment.postComments
         && this.props.postComment.postComments.map((comment) => (
-            <Comment
-                key={comment._id}
-                author={comment.author.name}
-                avatar={comment.author.image}
-                content={comment.content}
-                datetime={
-                    <Tooltip>
-                        <span>{moment(comment.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
-                    </Tooltip>
-                }
+                <Comment
+                    key={comment._id}
+                    author={comment.author.name}
+                    avatar={comment.author.image}
+                    content={comment.content}
+                    datetime={
+                        <Tooltip>
+                            <span>{moment(comment.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
+                        </Tooltip>
+                    }
             />
         ))
   
@@ -93,7 +92,16 @@ class AppComment extends React.Component {
   
       return (
         <>
-        {this.props.postComment.postComments && this.renderComments()}
+        <Collapse 
+            defaultActiveKey={['1']} 
+            bordered={false}
+            expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+            style={{backgroundColor: 'white'}}
+        >
+            <Panel header="Comments" key="1">
+                {this.props.postComment.postComments && this.renderComments()}
+            </Panel>
+        </Collapse>
           <Comment
             avatar={
               <Avatar
