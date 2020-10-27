@@ -8,11 +8,11 @@ import {
     Form, 
     Input, 
     Comment, 
-    Tooltip, 
-    Avatar,
+    Tooltip,
     Divider,
     Alert 
 } from 'antd';
+import Dropzone from 'react-dropzone'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import { connect, useDispatch } from 'react-redux'
@@ -21,6 +21,7 @@ import { getRoomContent } from '../../../../../_actions/rooms_actions'
 import io from 'socket.io-client'
 
 import PostItem from './PostItem'
+import Axios from 'axios';
 
 const { Panel } = Collapse;
 
@@ -92,6 +93,20 @@ export class Main extends Component {
         ))
     }
 
+    onDrop = (files) => {
+        console.log(files)
+        let formData = new FormData
+
+        let config = {
+            header: { 'content-type': 'multipart/form-data' }
+        }
+
+        formData.append('file', files[0])
+
+        Axios.post('/upload', formData, config)
+            .then((res) => console.log(res))
+    }
+
     render() {
         return (
             <>
@@ -129,20 +144,31 @@ export class Main extends Component {
                             />
                         </Form.Item>
                         <Form.Item>
-                            <Button>
-                                <UploadOutlined /> Add
-                            </Button>
-                            <Button 
-                                style={{float: 'right'}} 
-                                type="primary" 
-                                htmlType="submit"
-                                onClick={this.submit}
-                            >
-                                POST
-                            </Button>
-                            <Button style={{float: 'right', marginRight: '0.5rem'}}>
-                                Cancel
-                            </Button>
+                                    <Dropzone onDrop={this.onDrop}>
+                                        {({getRootProps, getInputProps}) => (
+                                            <section>
+                                                <div {...getRootProps()}>
+                                                    <input {...getInputProps()} />
+                                                    <Button block>
+                                                        <UploadOutlined />
+                                                    </Button>
+                                                </div>
+                                            </section>
+                                        )}
+                                    </Dropzone>
+                                    <div style={{marginTop: '0.5rem'}}>
+                                        <Button 
+                                            type="primary" 
+                                            htmlType="submit"
+                                            onClick={this.submit}
+                                            style={{float: 'right', marginLeft: '0.5rem'}}
+                                        >
+                                            POST
+                                        </Button>
+                                        <Button style={{float: 'right'}}>
+                                            Cancel
+                                        </Button>
+                                    </div>
                         </Form.Item>
                     </Form>
                 </Panel>

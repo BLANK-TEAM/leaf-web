@@ -1,7 +1,11 @@
 const express = require("express");
 const app = express();
+const multer = require('multer')
 const path = require("path");
 const cors = require('cors')
+const crypto = require('crypto')
+const Grid = require('gridfs-stream')
+const GridFsStorage = require('multer-gridfs-storage')
 
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -12,13 +16,51 @@ const io = require('socket.io')(server);
 const config = require("./config/key");
 
 const mongoose = require("mongoose");
-const connect = mongoose.connect(config.mongoURI,
-  {
-    useNewUrlParser: true, useUnifiedTopology: true,
-    useCreateIndex: true, useFindAndModify: false
+const connect = mongoose.connect(config.mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+});
+
+const conn = mongoose.createConnection(config.mongoURI)
+
+let gfs;
+
+conn.once('open', () => {
+  gfs = Grid(conn.db, mongoose.mongo)
+  gfs.collection('uploads')
+})
+
+// Create Storage engine
+
+const storage = new GridFsStorage({
+  url: config.mongoURI,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buff) => {
+        if (err) {
+          reject(err)
+        }
+        const filename = buff.toString('hex') + path.extname(file.originalname)
+        const fileInfo = {
+          filename: filename,
+          bucketName: 'uploads'
+        }
+        resolve(fileInfo)
+      })
+    })
+  }
+})
+const upload = multer({ storage }).single('file')
+ 
+app.post('/upload', (req, res) => {
+  upload(req, res, err => {
+    if (err) {
+      return res.json({ success: false, err })
+    }
+    return res.json({ success: true, file: req.file })
   })
-  .then(() => console.log('MongoDB Connected...'))
-  .catch(err => console.log(err));
+})
 
 app.use(cors())
 
