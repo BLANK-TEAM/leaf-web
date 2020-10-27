@@ -73,13 +73,15 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 const { Comment } = require('./models/Comment');
+const { PostComment } = require('./models/PostComment')
 
 app.use('/api/users', require('./routes/users'));
 app.use('/api/rooms', require('./routes/room'));
 app.use('/api/comments', require('./routes/comments'));
+app.use('/api/postComments', require('./routes/postComments'));
 
 io.on('connection', socket => {
-  socket.on('Create Comment', data => {
+  socket.on('Create Post', data => {
     connect.then(db => {
       try {
         let comment = new Comment({ 
@@ -132,6 +134,31 @@ io.on('connection', socket => {
             post.save()
           })
       } catch (error) {
+
+      }
+    })
+  })
+  socket.on('Create Post Comment', comment => {
+    connect.then(db => {
+      try {
+        let newComment = new PostComment({ 
+          author: comment.author, 
+          content: comment.content, 
+          post: comment.post
+        })
+
+        newComment.save((err, doc) => {
+          if (err) return res.json({ success: false, err })
+
+          PostComment.find({ "_id": doc._id })
+          .populate('author')
+          .populate('post')
+          .exec((err, doc) => {
+            return io.emit('Output Post Comment', doc)
+          })
+
+        })
+      } catch(error) {
 
       }
     })

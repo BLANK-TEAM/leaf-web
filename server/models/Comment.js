@@ -11,7 +11,11 @@ const commentSchema = mongoose.Schema({
     room: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Room'
-    }
+    },
+    comments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'PostComment'
+    }]
 }, { timestamps: true })
 
 const Comment = mongoose.model('Comment', commentSchema);

@@ -75,7 +75,7 @@ export class Main extends Component {
         let content = this.state.content
         let room = this.props.state.roomId
 
-        this.socket.emit('Create Comment', {
+        this.socket.emit('Create Post', {
             author,
             content,
             room

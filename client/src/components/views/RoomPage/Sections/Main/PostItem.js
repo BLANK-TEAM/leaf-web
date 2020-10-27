@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { 
     Modal,
-    Col,
-    Collapse, 
     Button, 
     Form, 
     Input, 
@@ -22,94 +20,10 @@ import {
 import moment from 'moment'
 import { connect, useDispatch } from 'react-redux'
 import { deletePost } from '../../../../../_actions/comments_actions'
+import { getComments } from '../../../../../_actions/post_comments_action'
 import io from 'socket.io-client'
 
-const CommentList = ({ comments }) => (
-    <List
-      dataSource={comments}
-      header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
-      itemLayout="horizontal"
-      renderItem={props => <Comment {...props} />}
-    />
-  );
-  
-  const Editor = ({ onChange, onSubmit, submitting, value }) => (
-    <div style={{display: 'flex', flexWrap: 'nowrap'}}>
-      <Form.Item style={{width: '90%'}}>
-        <Input onChange={onChange} value={value} />
-      </Form.Item>
-      <Form.Item>
-        <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="default">
-            <SendOutlined />
-        </Button>
-      </Form.Item>
-    </div>
-  );
-  
-  class AppComment extends React.Component {
-    state = {
-      comments: [],
-      submitting: false,
-      value: '',
-    };
-  
-    handleSubmit = () => {
-      if (!this.state.value) {
-        return;
-      }
-  
-      this.setState({
-        submitting: true,
-      });
-  
-      setTimeout(() => {
-        this.setState({
-          submitting: false,
-          value: '',
-          comments: [
-            {
-              author: this.props.user.userData.name,
-              avatar: this.props.user.userData.image,
-              content: <p>{this.state.value}</p>,
-              datetime: moment().fromNow(),
-            },
-            ...this.state.comments,
-          ],
-        });
-      }, 1000);
-    };
-  
-    handleChange = e => {
-      this.setState({
-        value: e.target.value,
-      });
-    };
-  
-    render() {
-      const { comments, submitting, value } = this.state;
-  
-      return (
-        <>
-          {comments.length > 0 && <CommentList comments={comments} />}
-          <Comment
-            avatar={
-              <Avatar
-                src={this.props.user.userData.image}
-              />
-            }
-            content={
-              <Editor
-                onChange={this.handleChange}
-                onSubmit={this.handleSubmit}
-                submitting={submitting}
-                value={value}
-              />
-            }
-          />
-        </>
-      );
-    }
-  }
+import AppComment from './AppComment'
 
 let socket;
 let server = 'http://localhost:5000'
@@ -132,6 +46,8 @@ const PostItem = props => {
     socket = io(server)
 
     useEffect(() => {
+
+
         socket.on('Output Delete Post', msg => {
             setMessage(msg.msg)
             setId(msg.id)
@@ -241,7 +157,11 @@ const PostItem = props => {
                     </div>
                     </div>
                     <Divider />
-                    <AppComment user={props.user} />
+                    <AppComment 
+                      user={props.user} 
+                      socket={socket} 
+                      post={props.post}
+                    />
                 </div>
             </div>
     )
