@@ -74,11 +74,13 @@ export class Main extends Component {
         let author = this.props.user.userData._id
         let content = this.state.content
         let room = this.props.state.roomId
+        let comments = []
 
         this.socket.emit('Create Post', {
             author,
             content,
-            room
+            room,
+            comments
         })
 
         this.setState({ content: "", status: true })

@@ -13,6 +13,7 @@ import moment from 'moment'
 import { SendOutlined, CaretRightOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 import { afterPostComment, getComments } from '../../../../../_actions/post_comments_action'
+import Axios from 'axios';
   
 const { Panel } = Collapse
 
@@ -33,12 +34,21 @@ class AppComment extends React.Component {
     state = {
       submitting: false,
       value: '',
+      comments: []
     };
 
     componentDidMount() {
-        this.props.dispatch(getComments(this.props.post._id))
+        Axios.get(`/api/postComments/${this.props.post._id}`)
+          .then((res) => {
+            this.setState({
+              comments: res.data
+            })
+          })
         this.props.socket.on('Output Post Comment', data => {
-            this.props.dispatch(afterPostComment(data))
+          this.state.comments.concat(data)
+          setTimeout(() => {
+            window.location.reload()
+          }, 500)
         })
     }
   
@@ -72,8 +82,7 @@ class AppComment extends React.Component {
     };
 
     renderComments = () => 
-        this.props.postComment.postComments
-        && this.props.postComment.postComments.map((comment) => (
+        this.state.comments.map((comment) => (
                 <Comment
                     key={comment._id}
                     author={comment.author.name}
@@ -84,7 +93,7 @@ class AppComment extends React.Component {
                             <span>{moment(comment.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
                         </Tooltip>
                     }
-            />
+                />
         ))
   
     render() {
@@ -92,16 +101,18 @@ class AppComment extends React.Component {
   
       return (
         <>
-        <Collapse 
-            defaultActiveKey={['1']} 
-            bordered={false}
-            expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-            style={{backgroundColor: 'white'}}
-        >
-            <Panel header="Comments" key="1">
-                {this.props.postComment.postComments && this.renderComments()}
-            </Panel>
-        </Collapse>
+            {this.state.comments  
+            ? <Collapse 
+                bordered={false}
+                expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+                style={{backgroundColor: 'white'}}
+              >
+                <Panel header={`${this.state.comments.length} Comments`} key="1">
+                    {this.renderComments()}
+                </Panel>
+              </Collapse>
+            : null
+            }
           <Comment
             avatar={
               <Avatar

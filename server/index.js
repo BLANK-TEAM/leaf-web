@@ -87,7 +87,8 @@ io.on('connection', socket => {
         let comment = new Comment({ 
           author: data.author, 
           content: data.content, 
-          room: data.room 
+          room: data.room,
+          comments: data.comments 
         })
         
         comment.save((err, doc) => {
