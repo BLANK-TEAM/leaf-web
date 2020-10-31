@@ -7,13 +7,21 @@ import {
     Input,
     Button,
     Tooltip,
-    Collapse
+    Collapse,
+    Alert
 } from 'antd';
 import moment from 'moment'
-import { SendOutlined, CaretRightOutlined } from '@ant-design/icons'
+import { 
+  SendOutlined, 
+  CaretRightOutlined, 
+  DeleteOutlined, 
+  EditOutlined 
+} from '@ant-design/icons'
 import { connect } from 'react-redux'
 import { afterPostComment, getComments } from '../../../../../_actions/post_comments_action'
 import Axios from 'axios';
+
+import styles from './AppComment.module.css'
   
 const { Panel } = Collapse
 
@@ -34,7 +42,10 @@ class AppComment extends React.Component {
     state = {
       submitting: false,
       value: '',
-      comments: []
+      comments: [],
+      status: false,
+      message: '',
+      item: ''
     };
 
     componentDidMount() {
@@ -45,10 +56,16 @@ class AppComment extends React.Component {
             })
           })
         this.props.socket.on('Output Post Comment', data => {
-          this.state.comments.concat(data)
-          setTimeout(() => {
-            window.location.reload()
-          }, 500)
+          this.setState({
+            comments: this.state.comments.concat(data)
+          })
+        })
+        this.props.socket.on('Output Delete Post Comment', data => {
+          this.setState({
+            status: data.status,
+            message: data.message,
+            comments: this.state.comments.filter(item => item._id !== data.comment._id)
+          })
         })
     }
   
@@ -81,8 +98,40 @@ class AppComment extends React.Component {
       });
     };
 
+    onEditClick = (id) => {
+      console.log(id)
+      setTimeout(() => {
+        this.props.socket.emit('Update Post Comment', {
+          id: id
+        })
+      }, 500)
+    }
+
+    onDeleteClick = (id) => {
+      this.setState({
+        item: id
+      })
+      this.props.socket.emit('Delete Post Comment', {
+        id
+      })
+    }
+
     renderComments = () => 
         this.state.comments.map((comment) => (
+          <>
+                {this.state.status && comment._id === this.state.item
+                  ? <Alert 
+                      message={this.state.message}
+                      type="success" 
+                    />
+                  : null
+                }
+              <div
+                style={{
+                  display: 'flex', 
+                  justifyContent: 'space-between'
+                }}
+              >
                 <Comment
                     key={comment._id}
                     author={comment.author.name}
@@ -94,6 +143,12 @@ class AppComment extends React.Component {
                         </Tooltip>
                     }
                 />
+                <div>
+                    <EditOutlined onClick={() => this.onEditClick(comment)} />
+                    <DeleteOutlined style={{marginLeft: '0.5rem'}} onClick={() => this.onDeleteClick(comment._id)} />
+                </div>
+              </div>
+          </>
         ))
   
     render() {

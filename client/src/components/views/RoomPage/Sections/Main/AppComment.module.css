@@ -1,0 +1,7 @@
+.comment__inner {
+    display: none;
+}
+
+.comment:hover + .comment__inner {
+    display: block;
+}

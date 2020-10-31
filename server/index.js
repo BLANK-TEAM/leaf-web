@@ -125,6 +125,27 @@ io.on('connection', socket => {
       }
     })
   })
+  socket.on('Delete Post Comment', comment => {
+    connect.then(db => {
+      try {
+        console.log(comment.id)
+        PostComment.findById(comment.id)
+          .then((item) => {
+            PostComment.findByIdAndDelete(comment.id)
+            .then(() => {
+              const msg = {
+                message: 'Deleted successfully!',
+                status: true,
+                comment: item
+              }
+              return io.emit('Output Delete Post Comment', msg)
+            })
+          })
+      } catch (error) {
+
+      }
+    })
+  })
   socket.on('Update Post', data => {
     connect.then(db => {
       try {
