@@ -2,7 +2,7 @@ import React from 'react'
 import { 
     Comment, 
     Avatar,
-    List,
+    Modal,
     Form,
     Input,
     Button,
@@ -15,7 +15,8 @@ import {
   SendOutlined, 
   CaretRightOutlined, 
   DeleteOutlined, 
-  EditOutlined 
+  EditOutlined ,
+  CommentOutlined
 } from '@ant-design/icons'
 import { connect } from 'react-redux'
 import { afterPostComment, getComments } from '../../../../../_actions/post_comments_action'
@@ -45,7 +46,10 @@ class AppComment extends React.Component {
       comments: [],
       status: false,
       message: '',
-      item: ''
+      item: '',
+      visible: false,
+      loading: false,
+      content: ''
     };
 
     componentDidMount() {
@@ -100,11 +104,12 @@ class AppComment extends React.Component {
 
     onEditClick = (id) => {
       console.log(id)
-      setTimeout(() => {
-        this.props.socket.emit('Update Post Comment', {
-          id: id
-        })
-      }, 500)
+      this.setState({ visible: true })
+      // setTimeout(() => {
+      //   this.props.socket.emit('Update Post Comment', {
+      //     id: id
+      //   })
+      // }, 500)
     }
 
     onDeleteClick = (id) => {
@@ -116,16 +121,52 @@ class AppComment extends React.Component {
       })
     }
 
+    handleContentChange = e => {
+      this.setState({ content: e.target.value })
+    }
+
+    handleOk = e => {
+      e.preventDefault()
+    }
+
+    handleCancel = e => {
+      e.preventDefault()
+      this.setState({ visible: false })
+    }
+
     renderComments = () => 
         this.state.comments.map((comment) => (
           <>
-                {this.state.status && comment._id === this.state.item
+              <Modal
+                  title={<CommentOutlined />}
+                  visible={this.state.visible}
+                  onOk={this.handleOk}
+                  onCancel={this.handleCancel}
+                  footer={[
+                      <Button key="back" onClick={this.handleCancel}>
+                          Cancel
+                      </Button>,
+                      <Button key="submit" type="primary" loading={this.state.loading} onClick={this.handleOk}>
+                          Submit
+                      </Button>
+                  ]}
+                >
+                    <Form onSubmit={this.handleOk}>
+                        <Form.Item>
+                            <Input.TextArea
+                                value={this.state.content}
+                                onChange={this.handleContentChange}
+                            />
+                        </Form.Item>
+                    </Form>
+              </Modal>
+              {this.state.status && comment._id === this.state.item
                   ? <Alert 
                       message={this.state.message}
                       type="success" 
                     />
                   : null
-                }
+              }
               <div
                 style={{
                   display: 'flex', 
