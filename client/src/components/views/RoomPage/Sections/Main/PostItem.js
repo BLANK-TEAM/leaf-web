@@ -105,9 +105,9 @@ const PostItem = props => {
                         <Comment 
                                 author={<a>{props.post.author.name}</a>}
                                 content={
-                                    <p>
+                                    <a href="#">
                                         {props.post.content}
-                                    </p>
+                                    </a>
                                 }
                                 avatar={
                                     <Avatar 
@@ -125,12 +125,17 @@ const PostItem = props => {
                             justifyContent: 'flex-end'
                         }}
                     >
-                        <Button onClick={submitDeletePost} style={{marginRight: '0.5rem'}}>
-                            <DeleteOutlined />
-                        </Button>
-                        <Button onClick={showModal}>
-                            <EditOutlined />
-                        </Button>
+                        {props.roomAuthor === localStorage.getItem('userId')
+                        ?   <>  
+                                <Button onClick={submitDeletePost} style={{marginRight: '0.5rem'}}>
+                                    <DeleteOutlined />
+                                </Button>
+                                <Button onClick={showModal}>
+                                    <EditOutlined />
+                                </Button>
+                            </>
+                        : null
+                        }
                         <Modal
                             visible={visible}
                             title={<CommentOutlined />}

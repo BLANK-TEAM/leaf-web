@@ -135,7 +135,8 @@ class LandingPage extends Component {
             users: [this.state.username],
             messages: [],
             courses: [],
-            roomKey: this.state.roomKey
+            roomKey: this.state.roomKey,
+            author: this.props.user.userData._id
         }
 
         this.props.dispatch(createNewRoom(room)).then((res) => {

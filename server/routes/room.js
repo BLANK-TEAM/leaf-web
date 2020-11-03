@@ -11,7 +11,8 @@ router.post('/', (req, res) => {
         users: req.body.users,
         messages: req.body.messages,
         courses: req.body.courses,
-        roomKey: req.body.roomKey
+        roomKey: req.body.roomKey,
+        author: req.body.author
     })
 
     room.save()

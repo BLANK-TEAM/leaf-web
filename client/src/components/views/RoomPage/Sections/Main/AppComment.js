@@ -184,10 +184,13 @@ class AppComment extends React.Component {
                         </Tooltip>
                     }
                 />
-                <div>
+                {this.props.user.userData._id === comment.author._id
+                ? <div>
                     <EditOutlined onClick={() => this.onEditClick(comment)} />
                     <DeleteOutlined style={{marginLeft: '0.5rem'}} onClick={() => this.onDeleteClick(comment._id)} />
-                </div>
+                  </div>
+                : null
+                }
               </div>
           </>
         ))

@@ -20,7 +20,12 @@ const roomSchema = mongoose.Schema({
         ref: 'Course'
     }],
     roomKey: {
-        type: String
+        type: String,
+        unique: true
+    },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, { timestamps: true })
 

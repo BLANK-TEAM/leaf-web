@@ -31,7 +31,8 @@ export class Main extends Component {
         roomId: "",
         content: "",
         posts: [],
-        status: false
+        status: false,
+        author: ""
     }
 
     onContentChange = (e) => {
@@ -91,7 +92,7 @@ export class Main extends Component {
 
     renderComments = () => {
         return this.state.posts.map((post) => (
-            <PostItem key={post._id} post={post} />
+            <PostItem key={post._id} post={post} roomAuthor={this.props.state.author} />
         ))
     }
 
@@ -123,58 +124,62 @@ export class Main extends Component {
                 }}>
                 <h3 style={{padding: '1rem'}}>{this.props.state.roomName}</h3>
             </div>
-            <Collapse
-                style={{
-                    width: '90%',
-                    margin: '0 auto',
-                    marginTop: '1rem'
-                }}
-            >
-                <Panel header="Share something...">
-                    {this.state.status 
-                    ? <Alert 
-                        message="Successfully added..." 
-                        type="success" 
-                        style={{marginBottom: '0.5rem'}}
-                    />
-                    : null}
-                    <Form onSubmit={this.submit}>
-                        <Form.Item>
-                            <Input.TextArea 
-                                onChange={this.onContentChange} 
-                                value={this.state.content}
-                            />
-                        </Form.Item>
-                        <Form.Item>
-                                    <Dropzone onDrop={this.onDrop}>
-                                        {({getRootProps, getInputProps}) => (
-                                            <section>
-                                                <div {...getRootProps()}>
-                                                    <input {...getInputProps()} />
-                                                    <Button block>
-                                                        <UploadOutlined />
-                                                    </Button>
-                                                </div>
-                                            </section>
-                                        )}
-                                    </Dropzone>
-                                    <div style={{marginTop: '0.5rem'}}>
-                                        <Button 
-                                            type="primary" 
-                                            htmlType="submit"
-                                            onClick={this.submit}
-                                            style={{float: 'right', marginLeft: '0.5rem'}}
-                                        >
-                                            POST
-                                        </Button>
-                                        <Button style={{float: 'right'}}>
-                                            Cancel
-                                        </Button>
-                                    </div>
-                        </Form.Item>
-                    </Form>
-                </Panel>
-            </Collapse>
+            {this.props.state.author === localStorage.getItem('userId')
+            ?   <Collapse
+                    style={{
+                        width: '90%',
+                        margin: '0 auto',
+                        marginTop: '1rem'
+                    }}
+                >
+                    <Panel header="Share something...">
+                        {this.state.status 
+                        ? <Alert 
+                            message="Successfully added..." 
+                            type="success" 
+                            style={{marginBottom: '0.5rem'}}
+                        />
+                        : null}
+                        <Form onSubmit={this.submit}>
+                            <Form.Item>
+                                <Input.TextArea 
+                                    onChange={this.onContentChange} 
+                                    value={this.state.content}
+                                />
+                            </Form.Item>
+                            <Form.Item>
+                                        <Dropzone onDrop={this.onDrop}>
+                                            {({getRootProps, getInputProps}) => (
+                                                <section>
+                                                    <div {...getRootProps()}>
+                                                        <input {...getInputProps()} />
+                                                        <Button block>
+                                                            <UploadOutlined />
+                                                        </Button>
+                                                    </div>
+                                                </section>
+                                            )}
+                                        </Dropzone>
+                                        <div style={{marginTop: '0.5rem'}}>
+                                            <Button 
+                                                type="primary" 
+                                                htmlType="submit"
+                                                onClick={this.submit}
+                                                style={{float: 'right', marginLeft: '0.5rem'}}
+                                            >
+                                                POST
+                                            </Button>
+                                            <Button style={{float: 'right'}}>
+                                                Cancel
+                                            </Button>
+                                        </div>
+                            </Form.Item>
+                        </Form>
+                    </Panel>
+                </Collapse>
+            : null
+            }
+            
             <div>
                 {this.props.comment && (
                     <div>{this.renderComments()}</div>

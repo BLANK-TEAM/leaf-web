@@ -55,7 +55,8 @@ class RoomPage extends Component {
                     roomId: res.payload._id,
                     roomName: res.payload.name,
                     users: res.payload.users,
-                    subject: res.payload.subject
+                    subject: res.payload.subject,
+                    author: res.payload.author
                 })
             })
             .then(() => {
