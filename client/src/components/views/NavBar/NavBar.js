@@ -35,7 +35,7 @@ function NavBar() {
           <Icon type="align-right" />
         </Button>
         <Drawer
-          title="Basic Drawer"
+          title="Leaf Website"
           placement="right"
           className="menu_drawer"
           closable={false}

@@ -9,6 +9,7 @@ import {
 import io from 'socket.io-client'
 
 import Main from './Sections/Main/Main'
+import CoursePage from './Sections/Course/CoursePage'
 
 function Section(props) {
 
@@ -19,7 +20,7 @@ function Section(props) {
             : null
         }
         {props.name === 'courses'
-            ? <div>Courses Section</div>
+            ? (<CoursePage state={props.state} />)
             : null
         }
         {props.name === 'streams'
@@ -41,7 +42,7 @@ class RoomPage extends Component {
         roomName: "",
         subject: "",
         users: undefined,
-        current: 'main'
+        current: 'courses'
     }
 
     componentDidMount() {
