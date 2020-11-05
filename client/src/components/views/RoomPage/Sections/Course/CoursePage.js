@@ -7,7 +7,9 @@ import {
     Collapse,
     Card,
     Comment,
-    List 
+    List,
+    Row,
+    Col 
 } from 'antd'
 import {
     TranslationOutlined,
@@ -21,7 +23,7 @@ const { Meta } = Card;
 const data = [
     {
       author: 'Eugene Oleynik',
-      avatar: 'https://lh3.googleusercontent.com/proxy/csQM-ivWdJPG32US_xqoW2iVx7G47OcR6udxOylQT1rO_5rzY_6AERCGX1vxfVuxpJ2HclXAMq-sffSakPPF6kH54gGDulUhlfiYye06GLPj',
+      avatar: 'https://i.pinimg.com/236x/29/4c/b3/294cb357c2ae3576ebd6f7c2605cc095.jpg',
       content: (
         <p>
           Not bad course!
@@ -68,31 +70,31 @@ export default class CoursePage extends Component {
         return (
             <div style={{margin: '2rem'}}>
                 <Tooltip title="You will learn: Nodejs, ExpressJs, MongoDB, SocketIO, Heroku">
-                    <div onClick={() => this.setState({ visible: true })} style={{display: 'flex', maxWidth: '50rem', cursor: 'pointer'}}>
-                        <div style={{width: '35%'}}>
-                            <img
-                                style={{
-                                    borderStyle: 'solid', 
-                                    borderWidth: '1px',
-                                    borderRadius: '0.3rem'
-                                }}
-                                src="https://img-a.udemycdn.com/course/240x135/2041082_057e_10.jpg?DaAVdVXFodG0A75M0nj42W5tF1JSpeEEbS93r5iJBOVr0Tev7Fj1KyKG1WQNqoQhXIS3gOqsWvwDS2R1lmofs1q1d7chDi3iw_dd5ralDaAdFSzWOxsAe7-PpkFkWts"
-                            />
-                        </div>
-                        <div style={{width: '55%'}}>
-                            <div>
-                                <h3 style={{fontWeight: 'bold'}}>Express JS. Practical Course</h3>
-                                <h4>Server on Express, Mongodb, Mongoose, Heroku</h4>
-                                <h4 style={{color: '#adadad'}}>Nikita Vozniuk</h4>
-                                <h4 style={{color: '#8e8e8e'}}>Total lessons: 10 · Total tasks 4</h4>
+                    <Row onClick={() => this.setState({ visible: true })} style={{display: 'flex', maxWidth: '100rem', cursor: 'pointer'}}>
+                        <Col span={20}>
+                            <div style={{display: 'flex'}}>
+                                <img
+                                    style={{
+                                        borderStyle: 'solid', 
+                                        borderWidth: '1px',
+                                        borderRadius: '0.3rem'
+                                    }}
+                                    src="https://img-a.udemycdn.com/course/240x135/2041082_057e_10.jpg?DaAVdVXFodG0A75M0nj42W5tF1JSpeEEbS93r5iJBOVr0Tev7Fj1KyKG1WQNqoQhXIS3gOqsWvwDS2R1lmofs1q1d7chDi3iw_dd5ralDaAdFSzWOxsAe7-PpkFkWts"
+                                />
+                                <div style={{marginLeft: '0.5rem'}}>
+                                    <h3 style={{fontWeight: 'bold'}}>Express JS. Practical Course</h3>
+                                    <h4>Server on Express, Mongodb, Mongoose, Heroku</h4>
+                                    <h4 style={{color: '#adadad'}}>Nikita Vozniuk</h4>
+                                    <h4 style={{color: '#8e8e8e'}}>Total lessons: 10 · Total tasks 4</h4>
+                                </div>
                             </div>
-                        </div>
-                        <div style={{width: '10%'}}>
-                            <Button style={{marginTop: '50%'}}>
+                        </Col>
+                        <Col span={4}>
+                            <Button style={{marginTop: '3rem'}}>
                                 START
                             </Button>
-                        </div>
-                    </div>
+                        </Col>
+                    </Row>
                     <Divider />
                 </Tooltip>
                 <Modal
@@ -163,8 +165,8 @@ export default class CoursePage extends Component {
                             </Panel>
                         </Collapse>
                     </div>
-                    <div style={{marginTop: '0.5rem'}}>
-                        <h2 style={{textAlign: 'center'}}>Teachers</h2>
+                    <div style={{marginTop: '1rem'}}>
+                        <h2 style={{textAlign: 'center', paddingTop: '1rem'}}>Teachers</h2>
                         <Card
                             hoverable
                             style={{ width: 240, margin: '0 auto' }}
@@ -173,7 +175,7 @@ export default class CoursePage extends Component {
                             <Meta title="Geddoku" description="Nikita Vozniuk" />
                         </Card>
                     </div>
-                    <div style={{marginTop: '1rem'}}>
+                    <div style={{marginTop: '2rem'}}>
                         <h2 style={{textAlign: 'center'}}>Student's Reviews</h2>
                         <List
                             className="comment-list"
