@@ -6,16 +6,28 @@ const courseSchema = mongoose.Schema({
         required: true,
         unique: true
     },
-    titleDesc: {
+    subTitle: {
         type: String,
         required: true,
         unique: true
     },
-    description: {
+    learnItems: {
         type: String,
         required: true,
         unique: true
     },
+    coverImage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Image'
+    },
+    languages: [{
+        type: String,
+        required: true
+    }],
+    teachers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
     room: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Room',
