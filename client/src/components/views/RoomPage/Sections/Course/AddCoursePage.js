@@ -14,7 +14,8 @@ export default class AddCoursePage extends Component {
     state = {
         title: '',
         subTitle: '',
-        learnItems: ''
+        learnItems: '',
+        languages: ''
     }
 
     handleSubmit = (e) => {
@@ -22,13 +23,11 @@ export default class AddCoursePage extends Component {
         console.log(this.state)
     }
 
-    normFile = e => {
-        console.log('Upload event:', e);
-        if (Array.isArray(e)) {
-          return e;
+    onUploadFile = ({ file, fileList }) => {
+        if (file.status !== 'uploading') {
+            console.log(file);
         }
-        return e && e.fileList;
-    };
+    }
 
     render() {
         return (
@@ -69,11 +68,27 @@ export default class AddCoursePage extends Component {
                         name="Upload"
                         label="Upload Cover Picture"
                     >
-                        <Upload>
+                        <Upload 
+                            onChange={this.onUploadFile}
+                        >
                             <Button>
                                 <Icon type="upload" /> Upload
                             </Button>
                         </Upload>
+                    </Form.Item>
+                    <Form.Item label="Teaching language">
+                        <Select
+                            onChange={(e) => this.setState({ 
+                                languages: e 
+                            })}
+                            value={this.state.languages}
+                        >
+                            <Select.Option value="English">English</Select.Option>
+                            <Select.Option value="Русский">Русский</Select.Option>
+                            <Select.Option value="Español">Español</Select.Option>
+                            <Select.Option value="عَرَبِيّ‎">عَرَبِيّ‎</Select.Option>
+                            <Select.Option value="漢語">漢語</Select.Option>
+                        </Select>
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" block>
