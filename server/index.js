@@ -73,12 +73,13 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 const { Comment } = require('./models/Comment');
-const { PostComment } = require('./models/PostComment')
+const { PostComment } = require('./models/PostComment');
 
 app.use('/api/users', require('./routes/users'));
 app.use('/api/rooms', require('./routes/room'));
 app.use('/api/comments', require('./routes/comments'));
 app.use('/api/postComments', require('./routes/postComments'));
+app.use('/api/courses', require('./routes/Course/course'));
 
 io.on('connection', socket => {
   socket.on('Create Post', data => {

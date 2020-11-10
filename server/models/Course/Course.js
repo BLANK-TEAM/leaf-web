@@ -16,9 +16,9 @@ const courseSchema = mongoose.Schema({
         required: true,
         unique: true
     },
-    coverImage: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Image'
+    images: {
+        type: Array,
+        default: []
     },
     languages: [{
         type: String,

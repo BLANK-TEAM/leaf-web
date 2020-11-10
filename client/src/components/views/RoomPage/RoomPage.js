@@ -16,11 +16,15 @@ function Section(props) {
     return (
       <div>
         {props.name === 'main'
-            ? (<Main state={props.state} />)
-            : null
+            ?   (<Main state={props.state} />)
+            :   null
         }
         {props.name === 'courses'
-            ? (<CoursePage state={props.state} />)
+            ?   (<CoursePage 
+                    state={props.state} 
+                    user={props.user}
+                    room={props.room}
+                />)
             : null
         }
         {props.name === 'streams'
@@ -96,7 +100,9 @@ class RoomPage extends Component {
                 <Col span={20} push={4}>
                     <Section 
                         name={this.state.current} 
-                        state={this.state} 
+                        state={this.state}
+                        user={this.props.user.userData}
+                        room={this.props.room.data} 
                     />
                 </Col>
                 <Col span={4} pull={20}>

@@ -8,6 +8,8 @@ import {
     Upload 
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons'
+import FileUpload from '../../../../utils/FileUpload'
+import Axios from 'axios';
 
 export default class AddCoursePage extends Component {
 
@@ -15,25 +17,49 @@ export default class AddCoursePage extends Component {
         title: '',
         subTitle: '',
         learnItems: '',
-        languages: ''
+        languages: '',
+        Images: []
     }
 
-    handleSubmit = (e) => {
+    updateImages = newImage => {
+        this.setState({
+            Images: newImage
+        })
+    }
+
+    onSubmit = e => {
         e.preventDefault()
-        console.log(this.state)
-    }
 
-    onUploadFile = ({ file, fileList }) => {
-        if (file.status !== 'uploading') {
-            console.log(file);
+        const course = {
+            title: this.state.title,
+            subTitle: this.state.subTitle,
+            learnItems: this.state.learnItems,
+            images: this.state.Images,
+            languages: this.state.languages,
+            teachers: this.props.user._id,
+            room: this.props.room._id,
+            author: this.props.user._id,
+            lessons: [],
+            reviews: []
         }
+
+        Axios.post('/api/courses/', course)
+            .then(res => {
+                if (res.data.success) {
+                    alert('Course successfully created!')
+                    window.location = '/room'
+                } else {
+                    alert('Failed to create Course!')
+                }
+            })
+
     }
 
     render() {
         return (
             <div>
                 <Form
-                    onSubmit={this.handleSubmit}
+                    onSubmit={this.onSubmit}
                 >
                     <Form.Item name="Title" label="Title">
                         <Input 
@@ -68,13 +94,7 @@ export default class AddCoursePage extends Component {
                         name="Upload"
                         label="Upload Cover Picture"
                     >
-                        <Upload 
-                            onChange={this.onUploadFile}
-                        >
-                            <Button>
-                                <Icon type="upload" /> Upload
-                            </Button>
-                        </Upload>
+                        <FileUpload refreshFunction={this.updateImages} />
                     </Form.Item>
                     <Form.Item label="Teaching language">
                         <Select
@@ -91,7 +111,12 @@ export default class AddCoursePage extends Component {
                         </Select>
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" block>
+                        <Button 
+                            type="primary" 
+                            htmlType="submit" 
+                            block
+                            onClick={this.onSubmit}
+                        >
                             Create New Course
                         </Button>
                     </Form.Item>

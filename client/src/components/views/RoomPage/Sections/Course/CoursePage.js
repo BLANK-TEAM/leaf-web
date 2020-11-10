@@ -79,7 +79,10 @@ export default class CoursePage extends Component {
                         </Button>
                     ]}
                 >
-                    <AddCoursePage />
+                    <AddCoursePage 
+                        user={this.props.user} 
+                        room={this.props.room}
+                    />
                 </Modal>
                 <CourseItem />
             </div>
