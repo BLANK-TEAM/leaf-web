@@ -30,6 +30,19 @@ router.post('/uploadImage', (req, res) => {
 
 })
 
+router.post('/getAllCourses', (req, res) => {
+
+    Course.find()
+        .populate('author')
+        .populate('room')
+        .populate('teachers')
+        .exec((err, courses) => {
+            if (err) return res.status(400).json({ success: false, err })
+            res.status(200).json({ success: true, courses })
+        })
+
+})
+
 router.post('/', (req, res) => {
     const course = new Course({
         title: req.body.title,

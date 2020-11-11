@@ -8,7 +8,8 @@ import {
     Row,
     Col,
     Form,
-    Upload 
+    Upload,
+    Spin 
 } from 'antd'
 import {
     TranslationOutlined,
@@ -18,6 +19,7 @@ import moment from 'moment';
 
 import CourseItem from './CourseItem'
 import AddCoursePage from './AddCoursePage'
+import Axios from 'axios';
 
 const { Panel } = Collapse;
 const { Meta } = Card;
@@ -27,7 +29,27 @@ export default class CoursePage extends Component {
     state = {
         visible: false,
         loading: false,
-        title: ""
+        title: "",
+        Courses: [],
+        status: false
+    }
+
+    componentDidMount() {
+        this.setState({ status: true })
+        Axios.post('/api/courses/getAllCourses')
+            .then(res => {
+                if (res.data.success) {
+                    this.setState({
+                        Courses: res.data.courses
+                    })
+                    if (res.data.courses.length > 0) {
+                        this.setState({ status: false })
+                    }
+                    console.log(res.data.courses)
+                } else {
+                    alert('Failed to fetch product data')
+                }
+            })
     }
 
     handleCancel = () => {
@@ -84,7 +106,18 @@ export default class CoursePage extends Component {
                         room={this.props.room}
                     />
                 </Modal>
-                <CourseItem />
+                {this.state.status
+                ?   <Spin style={{ 
+                        width: '100%', 
+                        margin: '0 auto',
+                        marginTop: '1rem' 
+                    }} />
+                :   null
+                }
+                {this.state.Courses.map((course, index) => (
+                    <CourseItem course={course} key={index} />
+                ))
+                }
             </div>
         )
     }

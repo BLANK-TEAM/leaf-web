@@ -89,7 +89,7 @@ class CourseItem extends React.Component {
     render() {
         return (
             <div>
-                <Tooltip title={course.learnItems}>
+                <Tooltip title={this.props.course.learnItems}>
                         <Row onClick={() => this.setState({ visible: true })} style={{display: 'flex', maxWidth: '100rem', cursor: 'pointer', marginTop: '2rem'}}>
                             <Col span={24}>
                                 <div style={{display: 'flex'}}>
@@ -97,16 +97,17 @@ class CourseItem extends React.Component {
                                         style={{
                                             borderStyle: 'solid', 
                                             borderWidth: '1px',
-                                            borderRadius: '0.3rem'
+                                            borderRadius: '0.3rem',
+                                            width: '240px'
                                         }}
-                                        src={course.image}
+                                        src={`http://localhost:5000/${this.props.course.images[0]}`}
                                     />
                                     <div style={{marginLeft: '0.5rem'}}>
-                                        <h3 style={{fontWeight: 'bold'}}>{course.title}</h3>
-                                        <h4>{course.subTitle}</h4>
-                                        <h4 style={{color: '#adadad'}}>{course.author}</h4>
+                                        <h3 style={{fontWeight: 'bold'}}>{this.props.course.title}</h3>
+                                        <h4>{this.props.course.subTitle}</h4>
+                                        <h4 style={{color: '#adadad'}}>{this.props.course.author.name}</h4>
                                         <h4 style={{color: '#8e8e8e'}}>
-                                            Total lessons: {course.lessons} · Total tasks: {course.tasks}
+                                            Total lessons: {this.props.course.lessons.length}
                                         </h4>
                                     </div>
                                 </div>
@@ -115,7 +116,7 @@ class CourseItem extends React.Component {
                         <Divider />
                     </Tooltip>
                     <Modal
-                        title={course.title}
+                        title={this.props.course.title}
                         centered
                         visible={this.state.visible}
                         onOk={() => this.setState({ visible: false })}
@@ -145,15 +146,16 @@ class CourseItem extends React.Component {
                                     borderStyle: 'solid', 
                                     borderWidth: '1px',
                                     borderRadius: '0.3rem',
-                                    marginTop: '0.5rem'
+                                    marginTop: '0.5rem',
+                                    width: '240px'
                                 }}
-                                src={course.image}
+                                src={`http://localhost:5000/${this.props.course.images[0]}`}
                             />
                             <div style={{marginTop: '1rem'}}>
-                                <h2>{course.title}</h2>
-                                <h3>{course.subTitle}</h3>
-                                <h4>Authors: {course.author}</h4>
-                                <h4><TranslationOutlined /> {course.languages}</h4>
+                                <h2>{this.props.course.title}</h2>
+                                <h3>{this.props.course.subTitle}</h3>
+                                <h4>Authors: {this.props.course.author.name}</h4>
+                                <h4><TranslationOutlined /> {this.props.course.languages}</h4>
                             </div>
                             <div style={{
                                 display: 'flex', 
@@ -168,31 +170,34 @@ class CourseItem extends React.Component {
                         <div style={{marginTop: '0.5rem'}}>
                             <div style={{textAlign: 'center'}}>
                                 <h2>Course Materials</h2>
-                                <h4>· 1 lection</h4>
+                                <h4>· {this.props.course.lessons.length} lection</h4>
                             </div>
-                            <Collapse style={{backgroundColor: '#f5f5f5'}} defaultActiveKey={['1']}>
+                            {/* <Collapse style={{backgroundColor: '#f5f5f5'}} defaultActiveKey={['1']}>
                                 <Panel header={course.materials.title} key="1">
                                     <p>{course.materials.item}</p>
                                 </Panel>
-                            </Collapse>
+                            </Collapse> */}
                         </div>
                         <div style={{marginTop: '1rem'}}>
                             <h2 style={{textAlign: 'center', paddingTop: '1rem'}}>Teachers</h2>
                             <Card
                                 hoverable
                                 style={{ width: 240, margin: '0 auto' }}
-                                cover={<img alt="example" src={course.teachers[0].ava} />}
+                                cover={<img alt="example" src={this.props.course.teachers[0].image} />}
                             >
-                                <Meta title={course.teachers[0].username} description={course.teachers[0].name} />
+                                <Meta 
+                                    title={this.props.course.teachers[0].name} 
+                                    description={this.props.course.teachers[0].name} 
+                                />
                             </Card>
                         </div>
                         <div style={{marginTop: '2rem'}}>
                             <h2 style={{textAlign: 'center'}}>Student's Reviews</h2>
                             <List
                                 className="comment-list"
-                                header={`${data.length} reviews`}
+                                header={`${this.props.course.reviews.length} reviews`}
                                 itemLayout="horizontal"
-                                dataSource={data}
+                                dataSource={this.props.course.reviews}
                                 renderItem={item => (
                                     <li>
                                         <Comment
