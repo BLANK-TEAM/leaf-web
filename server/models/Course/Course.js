@@ -13,8 +13,7 @@ const courseSchema = mongoose.Schema({
     },
     learnItems: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     images: {
         type: Array,
@@ -31,12 +30,10 @@ const courseSchema = mongoose.Schema({
     room: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Room',
-        unique: true
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        unique: true
+        ref: 'User'
     },
     lessons: [{
         type: mongoose.Schema.Types.ObjectId,

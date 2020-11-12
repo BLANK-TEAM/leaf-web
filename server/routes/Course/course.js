@@ -30,20 +30,21 @@ router.post('/uploadImage', (req, res) => {
 
 })
 
-router.post('/getAllCourses', (req, res) => {
+router.post('/getCourses/:id', (req, res) => {
 
-    Course.find()
+    Course.find({ room: req.params.id })
         .populate('author')
         .populate('room')
         .populate('teachers')
         .exec((err, courses) => {
             if (err) return res.status(400).json({ success: false, err })
             res.status(200).json({ success: true, courses })
+            console.log(courses)
         })
 
 })
 
-router.post('/', (req, res) => {
+router.post('/add', (req, res) => {
     const course = new Course({
         title: req.body.title,
         subTitle: req.body.subTitle,
@@ -58,8 +59,11 @@ router.post('/', (req, res) => {
     })
 
     course.save()
-        .then(() => res.status(200).send({ success: true }))
-        .catch((err) => res.status(400).send({ success: false, err }))
+        .then(() => res.send({ success: true }))
+        .catch(err => {
+            res.status(400).send({ error: err })
+            console.log({ error: err })
+        });
 })
 
 router.get('/', (req, res) => {

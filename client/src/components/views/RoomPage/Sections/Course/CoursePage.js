@@ -36,11 +36,13 @@ export default class CoursePage extends Component {
 
     componentDidMount() {
         this.setState({ status: true })
-        Axios.post('/api/courses/getAllCourses')
+
+        setTimeout(() => {
+            Axios.post(`/api/courses/getCourses/${this.props.room._id}`)
             .then(res => {
                 if (res.data.success) {
                     this.setState({
-                        Courses: res.data.courses
+                        Courses: res.data.courses.reverse()
                     })
                     if (res.data.courses.length > 0) {
                         this.setState({ status: false })
@@ -50,6 +52,7 @@ export default class CoursePage extends Component {
                     alert('Failed to fetch product data')
                 }
             })
+        }, 500); 
     }
 
     handleCancel = () => {
@@ -80,7 +83,7 @@ export default class CoursePage extends Component {
                     hoverable
                     style={{ width: '100%', margin: '0 auto' }}
                 >
-                    <Meta title="Create New Course" description="Add you own education programm" />
+                    <Meta title="Create New Course" description="Add you own education program" />
                     <Button 
                         style={{float: 'right'}}
                         onClick={() => this.setState({ visible: true })}
@@ -101,10 +104,10 @@ export default class CoursePage extends Component {
                         </Button>
                     ]}
                 >
-                    <AddCoursePage 
-                        user={this.props.user} 
-                        room={this.props.room}
-                    />
+                <AddCoursePage 
+                    user={this.props.user} 
+                    room={this.props.room}
+                />
                 </Modal>
                 {this.state.status
                 ?   <Spin style={{ 
@@ -115,7 +118,11 @@ export default class CoursePage extends Component {
                 :   null
                 }
                 {this.state.Courses.map((course, index) => (
-                    <CourseItem course={course} key={index} />
+                    <CourseItem 
+                        course={course} 
+                        key={index}
+                        user={this.props.user}  
+                    />
                 ))
                 }
             </div>

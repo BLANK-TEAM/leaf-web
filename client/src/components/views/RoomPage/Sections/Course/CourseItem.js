@@ -98,14 +98,23 @@ class CourseItem extends React.Component {
                                             borderStyle: 'solid', 
                                             borderWidth: '1px',
                                             borderRadius: '0.3rem',
-                                            width: '240px'
+                                            width: '240px',
+                                            minWidth: '240px'
                                         }}
                                         src={`http://localhost:5000/${this.props.course.images[0]}`}
                                     />
-                                    <div style={{marginLeft: '0.5rem'}}>
+                                    <div 
+                                        style={{
+                                            marginLeft: '0.5rem',
+                                            maxWidth: '60%'
+                                        }}
+                                    >
                                         <h3 style={{fontWeight: 'bold'}}>{this.props.course.title}</h3>
                                         <h4>{this.props.course.subTitle}</h4>
-                                        <h4 style={{color: '#adadad'}}>{this.props.course.author.name}</h4>
+                                        {this.props.user._id === this.props.course.author._id
+                                        ? <h4 style={{color: '#b5b551'}}>{this.props.course.author.name}(you)</h4>
+                                        : <h4 style={{color: '#adadad'}}>{this.props.course.author.name}</h4>
+                                        }
                                         <h4 style={{color: '#8e8e8e'}}>
                                             Total lessons: {this.props.course.lessons.length}
                                         </h4>
@@ -211,6 +220,25 @@ class CourseItem extends React.Component {
                                 )}
                             />
                         </div>
+                        {this.props.user._id === this.props.course.author._id
+                        ?   <div 
+                                style={{
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <Button 
+                                    style={{
+                                        color: '#eb4034',
+                                        borderColor: "red"
+                                    }}
+                                >
+                                    Delete Course
+                                </Button>
+                            </div>
+                        : null
+                        }
                     </Modal>
             </div>
         )

@@ -43,11 +43,13 @@ export default class AddCoursePage extends Component {
             reviews: []
         }
 
-        Axios.post('/api/courses/', course)
+        console.log(course)
+
+        Axios.post('/api/courses/add', course)
             .then(res => {
                 if (res.data.success) {
                     alert('Course successfully created!')
-                    window.location = '/room'
+                    window.location = `/room/${this.props.room.roomKey}`
                 } else {
                     alert('Failed to create Course!')
                 }
