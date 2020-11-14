@@ -11,8 +11,7 @@ const lessonSchema = mongoose.Schema({
     },
     room: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Room',
-        unique: true
+        ref: 'Room'
     }
 }, { timestamps: true })
 

@@ -20,6 +20,21 @@ router.post('/', (req, res) => {
         .catch(err => res.status(400).send({ error: err }))
 })
 
+router.post('/join', (req, res) => {
+    Room.find({ roomKey: req.body.room })
+        .then(room => {
+
+            Room.findByIdAndUpdate(room[0]._id).then(item => {
+                item.users.push(req.body.user)
+
+                item.save()
+                    .then(() => res.send(item))
+            })
+
+        })
+        .catch(err => res.status(400).send({ error: err }))
+})
+
 router.get('/:id', (req, res) => {
     Room.find({ users: req.params.id })
     .populate('users')

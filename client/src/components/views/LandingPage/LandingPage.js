@@ -10,7 +10,7 @@ import {
     Divider 
 } from 'antd'
 import { connect } from 'react-redux'
-import { createNewRoom, getUserRooms } from '../../../_actions/rooms_actions'
+import { createNewRoom, getUserRooms, joinRoom } from '../../../_actions/rooms_actions'
 import { NavLink } from 'react-router-dom'
 
 const RoomItem = props => {
@@ -120,9 +120,15 @@ class LandingPage extends Component {
     submitJoin = (e) => {
         e.preventDefault()
 
-        console.log({
-            id: this.state.roomId,
-            username: this.state.username
+        let data = {
+            room: this.state.roomId,
+            user: this.props.user.userData._id
+        }
+
+        this.props.dispatch(joinRoom(data)).then((res) => {
+        //    alert(`You successfully added to ${res.payload[0].name}`)
+        //    window.location = `/room/${data.room}` 
+        console.log(res.payload)
         })
     }
 
@@ -183,14 +189,6 @@ class LandingPage extends Component {
                                 >
                                     <Input onChange={this.onRoomChange} />
                                 </Form.Item>
-
-                                <Form.Item
-                                    label="Username"
-                                    name="username"
-                                >
-                                    <Input onChange={this.onUsernameChange} />
-                                </Form.Item>
-
 
                                 <Form.Item>
                                     <Button block type="primary" htmlType="submit">

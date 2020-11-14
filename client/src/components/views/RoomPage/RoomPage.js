@@ -102,7 +102,7 @@ class RoomPage extends Component {
                         name={this.state.current} 
                         state={this.state}
                         user={this.props.user.userData}
-                        room={this.props.room.data} 
+                        room={this.state.roomId} 
                     />
                 </Col>
                 <Col span={4} pull={20}>

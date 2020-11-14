@@ -1,7 +1,8 @@
 import {
     CREATE_ROOM,
     GET_USER_ROOMS,
-    GET_ROOM_CONTENT
+    GET_ROOM_CONTENT,
+    JOIN_ROOM
 } from '../_actions/types';
 
 export default function(state={}, action) {
@@ -11,6 +12,8 @@ export default function(state={}, action) {
         case GET_USER_ROOMS:
             return { ...state, data: action.payload }
         case GET_ROOM_CONTENT:
+            return { ...state, data: action.payload }
+        case JOIN_ROOM:
             return { ...state, data: action.payload }
         default:
             return state

@@ -16,60 +16,13 @@ import {
     HeartOutlined
 } from '@ant-design/icons'
 import moment from 'moment';
+import {
+    BrowserRouter as
+    NavLink
+} from "react-router-dom";
 
 const { Panel } = Collapse;
 const { Meta } = Card;
-
-const course = {
-    learnItems: 'You will learn: Nodejs, ExpressJs, MongoDB, SocketIO, Heroku',
-    image: 'https://img-a.udemycdn.com/course/240x135/2041082_057e_10.jpg?DaAVdVXFodG0A75M0nj42W5tF1JSpeEEbS93r5iJBOVr0Tev7Fj1KyKG1WQNqoQhXIS3gOqsWvwDS2R1lmofs1q1d7chDi3iw_dd5ralDaAdFSzWOxsAe7-PpkFkWts',
-    title: 'Express JS. Practical Course',
-    subTitle: 'Server on Express, Mongodb, Mongoose, Heroku',
-    author: 'Nikita Vozniuk',
-    lessons: 10,
-    tasks: 5,
-    languages: 'English',
-    materials: {
-        title: 'Beginning',
-        item: '1st lesson'
-    },
-    teachers: [{
-        username: 'Geddoku',
-        name: 'Nikita Vozniuk',
-        ava: 'https://cdn.shopify.com/s/files/1/2994/3616/products/tokyoghoul_600x.jpg?v=1589523836'
-    }]
-}
-
-const data = [
-    {
-      author: 'Eugene Oleynik',
-      avatar: 'https://i.pinimg.com/236x/29/4c/b3/294cb357c2ae3576ebd6f7c2605cc095.jpg',
-      content: (
-        <p>
-          Not bad course!
-        </p>
-      ),
-      datetime: (
-        <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-          <span>{moment().subtract(1, 'days').fromNow()}</span>
-        </Tooltip>
-      ),
-    },
-    {
-      author: 'Nikita Zakomorniy',
-      avatar: 'https://i.pinimg.com/originals/ff/3f/aa/ff3faac6572244919cd3acd51bb50d14.jpg',
-      content: (
-        <p>
-          I so stupid for this...i maybe go record song
-        </p>
-      ),
-      datetime: (
-        <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-          <span>{moment().subtract(2, 'days').fromNow()}</span>
-        </Tooltip>
-      ),
-    },
-];
 
 class CourseItem extends React.Component {
 
@@ -86,6 +39,10 @@ class CourseItem extends React.Component {
 
     }
 
+    edit = () => {
+        window.location = `/edit/${this.props.course._id}`
+    }
+
     render() {
         return (
             <div>
@@ -99,7 +56,8 @@ class CourseItem extends React.Component {
                                             borderWidth: '1px',
                                             borderRadius: '0.3rem',
                                             width: '240px',
-                                            minWidth: '240px'
+                                            minWidth: '240px',
+                                            height: '140px'
                                         }}
                                         src={`http://localhost:5000/${this.props.course.images[0]}`}
                                     />
@@ -221,11 +179,13 @@ class CourseItem extends React.Component {
                             />
                         </div>
                         {this.props.user._id === this.props.course.author._id
-                        ?   <div 
+                        ?   <>
+                        
+                            <div 
                                 style={{
                                     display: 'flex', 
                                     alignItems: 'center', 
-                                    justifyContent: 'center'
+                                    justifyContent: 'flex-start'
                                 }}
                             >
                                 <Button 
@@ -236,7 +196,19 @@ class CourseItem extends React.Component {
                                 >
                                     Delete Course
                                 </Button>
+                                <Button 
+                                    style={{
+                                        color: '#21de63',
+                                        borderColor: "#21de63",
+                                        marginLeft: '1rem'
+                                    }}
+                                    onClick={this.edit}
+                                >
+                                   Update Course
+                                </Button>
                             </div>
+                            
+                            </>
                         : null
                         }
                     </Modal>

@@ -2,7 +2,8 @@ import axios from 'axios';
 import {
     CREATE_ROOM,
     GET_USER_ROOMS,
-    GET_ROOM_CONTENT
+    GET_ROOM_CONTENT,
+    JOIN_ROOM
 } from './types';
 import { ROOM_SERVER } from '../components/Config.js';
 
@@ -32,6 +33,16 @@ export function createNewRoom(dataToSubmit) {
     
     return {
         type: CREATE_ROOM,
+        payload: request
+    }
+}
+
+export function joinRoom(data) {
+    const request = axios.post(`${ROOM_SERVER}/join`, data)
+        .then(response => response.data);
+    
+    return {
+        type: JOIN_ROOM,
         payload: request
     }
 }

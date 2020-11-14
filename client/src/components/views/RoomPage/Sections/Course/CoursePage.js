@@ -38,7 +38,7 @@ export default class CoursePage extends Component {
         this.setState({ status: true })
 
         setTimeout(() => {
-            Axios.post(`/api/courses/getCourses/${this.props.room._id}`)
+            Axios.post(`/api/courses/getCourses/${this.props.room}`)
             .then(res => {
                 if (res.data.success) {
                     this.setState({
@@ -52,7 +52,7 @@ export default class CoursePage extends Component {
                     alert('Failed to fetch product data')
                 }
             })
-        }, 500); 
+        }, 1000); 
     }
 
     handleCancel = () => {
